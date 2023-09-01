@@ -1,0 +1,124 @@
+#include <iostream>
+
+using namespace std;
+const int x = 1, o = -1, emp = 0;
+int board[3][3];
+int currentPlayer = 1;
+bool winnerX = false, winnerO = false;
+
+void initialize()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            board[i][j] = emp;
+        }
+    }
+}
+
+int markPlace(int i, int j)
+{
+    if (board[i][j] == 0)
+    {
+        board[i][j] = currentPlayer;
+        currentPlayer = -currentPlayer;
+        return 1;
+    }
+    else
+    {
+        cout << "this cell is already taken. please enter a new cell..." << endl;
+        return 0;
+    }
+}
+
+void checkWinner()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        if (board[i][0] == 1 && board[i][1] == 1 && board[i][2] == 1)
+            winnerX = true;
+        else if (board[i][0] == -1 && board[i][1] == -1 && board[i][2] == -1)
+            winnerO = true;
+    }
+    for (int j = 0; j < 3; j++)
+    {
+        if (board[0][j] == 1 && board[1][j] == 1 && board[2][j] == 1)
+            winnerX = true;
+        else if (board[0][j] == -1 && board[1][j] == -1 && board[2][j] == -1)
+            winnerO = true;
+    }
+    if (board[0][0] == 1 && board[1][1] == 1 && board[2][2] == 1)
+        winnerX = true;
+    else if (board[0][0] == -1 && board[1][1] == -1 && board[2][2] == -1)
+        winnerO = true;
+    if (board[0][2] == 1 && board[1][1] == 1 && board[2][0] == 1)
+        winnerX = true;
+    else if (board[0][2] == -1 && board[1][1] == -1 && board[2][0] == -1)
+        winnerO = true;
+}
+
+void printBoard()
+{
+    cout << "the latest update is..." << endl;
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (board[i][j] == x)
+                cout << "X";
+            else if (board[i][j] == o)
+                cout << "O";
+            else
+                cout << " ";
+            if (j != 2)
+                cout << " | ";
+        }
+        cout  << endl << "----------" << endl;
+    }
+}
+
+int main()
+{
+    bool start = false;
+    cout << "Welcome to our Tic-Tac-Toe game! Nice to have you here!" << endl;
+    cout << "Please enter 1 to start the game or 0 to terminate...";
+    cin >> start;
+    if (!start)
+    {
+        cout << "It was our pleasure to have you, come back soon." << endl;
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        initialize();
+        int k = 9, cellI, cellJ;
+        while (k > 0)
+        {
+            cout << "its player " << (currentPlayer == x ? 'X' : 'O') << "'s turn" << endl;
+            cout << "please enter a cell indecies (i,j) to mark your place..." << endl;
+            cin >> cellI >> cellJ;
+            if(cellI>2||cellJ>2)
+                cout << "those cell indecies are out of range. please enter numbers from 0 to 2.." << endl;
+            else{
+            int ret = markPlace(cellI, cellJ);
+            if (ret)
+            { // proper operation
+                k--;
+                printBoard();
+                checkWinner();
+                if (winnerX)
+                {
+                    cout << "Congratulations X! You're the winner for this game. Hard luch O." << endl;
+                    return EXIT_SUCCESS;
+                }
+                else if (winnerO)
+                {
+                    cout << "Congratulations O! You're the winner for this game. Hard luch X." << endl;
+                    return EXIT_SUCCESS;
+                }
+            }
+            }
+        }
+    }
+}
